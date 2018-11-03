@@ -64,7 +64,7 @@ invol ctx switches : 0
 ## defects and room for improvement
 - no $PATH resolution occurs
 - output is lengthy and probably mostly uninteresting
-- output is in an ad-hoc text format and machine consumers would need to parse manually
+- output is in an ad-hoc text format that machine consumers would need to parse manually
 - only posix_spawn is used, but fork&exec might be preferred for timings more like a fork&exec-using application
 - this command lacks a manpage
 - 'getr' is probably a poor name
