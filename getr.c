@@ -47,7 +47,7 @@ int main (int argc, char **argv, char **environ) {
 			usage.ru_maxrss,
 			usage.ru_ixrss,
 			usage.ru_idrss,
-			usage.ru_idrss,
+			usage.ru_isrss,
 			usage.ru_minflt,
 			usage.ru_majflt,
 			usage.ru_nswap,
