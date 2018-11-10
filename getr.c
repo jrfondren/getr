@@ -6,6 +6,27 @@
 #include <string.h>
 #include <errno.h>
 
+#ifdef __linux__
+#define REPORT \
+	"User time      : %ld s, %ld us\n" \
+	"System time    : %ld s, %ld us\n" \
+	"Time           : %lld ms (%.3f ms/per)\n" \
+	"Max RSS        : %ld kB\n" \
+	"Page reclaims  : %ld\n" \
+	"Page faults    : %ld\n" \
+	"Block inputs   : %ld\n" \
+	"Block outputs  : %ld\n" \
+	"vol ctx switches   : %ld\n" \
+	"invol ctx switches : %ld\n"
+#define VALS \
+	usage.ru_maxrss, \
+	usage.ru_minflt, \
+	usage.ru_majflt, \
+	usage.ru_inblock, \
+	usage.ru_oublock, \
+	usage.ru_nvcsw, \
+	usage.ru_nivcsw
+#else
 #define REPORT \
 	"User time      : %ld s, %ld us\n" \
 	"System time    : %ld s, %ld us\n" \
@@ -22,6 +43,20 @@
 	"Sigs received  : %ld\n" \
 	"vol ctx switches   : %ld\n" \
 	"invol ctx switches : %ld\n"
+#define VALS \
+	usage.ru_maxrss, \
+	usage.ru_ixrss, \
+	usage.ru_idrss, \
+	usage.ru_isrss, \
+	usage.ru_minflt, \
+	usage.ru_majflt, \
+	usage.ru_nswap, \
+	usage.ru_inblock, \
+	usage.ru_oublock, \
+	usage.ru_nsignals, \
+	usage.ru_nvcsw, \
+	usage.ru_nivcsw
+#endif
 
 int main (int argc, char **argv, char **environ) {
 	struct rusage usage;
@@ -44,18 +79,8 @@ int main (int argc, char **argv, char **environ) {
 			(long int)usage.ru_stime.tv_usec,
 			(((usage.ru_utime.tv_usec + usage.ru_stime.tv_usec)/1000) + ((usage.ru_utime.tv_sec + usage.ru_stime.tv_sec)*1000)),
 			(((usage.ru_utime.tv_usec + usage.ru_stime.tv_usec)/1000.0) + ((usage.ru_utime.tv_sec + usage.ru_stime.tv_sec)*1000.0))/count,
-			usage.ru_maxrss,
-			usage.ru_ixrss,
-			usage.ru_idrss,
-			usage.ru_isrss,
-			usage.ru_minflt,
-			usage.ru_majflt,
-			usage.ru_nswap,
-			usage.ru_inblock,
-			usage.ru_oublock,
-			usage.ru_nsignals,
-			usage.ru_nvcsw,
-			usage.ru_nivcsw);
+			VALS
+		);
 	} else {
 		fprintf(stderr, "usage: %s <n> <command> [<args> ...]\n", argv[0]);
 		return 1;
